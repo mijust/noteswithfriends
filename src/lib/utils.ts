@@ -1,4 +1,4 @@
-// File location: /src/lib/utils.ts
+// File location: /src/lib/utils.ts (adding cn function implementation)
 import { ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 

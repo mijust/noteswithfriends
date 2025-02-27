@@ -1,10 +1,11 @@
+// File location: /src/app/module/[id]/page.jsx
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../../api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
-import { getModuleById } from '../../../lib/db';
-import MarkdownViewer from '../../../components/Notes/MarkdownViewer';
-import FreeformViewer from '../../../components/Notes/FreeformViewer';
-import UploadForm from '../../../components/Dashboard/UploadForm';
+import { getModuleById } from '@/lib/db';
+import MarkdownViewer from '@/components/Notes/MarkdownViewer';
+import FreeformViewer from '@/components/Notes/FreeformViewer';
+import UploadForm from '@/components/Dashboard/UploadForm';
 
 export default async function ModulePage({ params }) {
   const session = await getServerSession(authOptions);
@@ -13,7 +14,8 @@ export default async function ModulePage({ params }) {
     redirect('/login');
   }
   
-  const module = await getModuleById(params.moduleId);
+  const moduleId = params.id;
+  const module = await getModuleById(moduleId);
   
   if (!module) {
     return (

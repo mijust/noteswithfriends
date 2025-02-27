@@ -1,20 +1,21 @@
+// File location: /src/app/api/uploads/route.js
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../auth/[...nextauth]/route';
-import { addNoteToModule } from '../../../lib/db';
+import { authOptions } from '@/lib/auth';
+import { addNoteToModule } from '@/lib/db';
 import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
-// Diese Funktion würde für eine Produktionsumgebung angepasst werden,
-// um Dateien in einem Cloud-Speicher wie AWS S3 zu speichern
+// This function would be adapted for a production environment
+// to store files in a cloud storage like AWS S3
 async function saveFile(file, fileName) {
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
   
   const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
   
-  // Stelle sicher, dass das Verzeichnis existiert
+  // Ensure the directory exists
   if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
   }
@@ -32,7 +33,7 @@ export async function POST(request) {
   
   if (!session) {
     return NextResponse.json(
-      { error: 'Nicht authentifiziert' },
+      { error: 'Not authenticated' },
       { status: 401 }
     );
   }
@@ -44,7 +45,7 @@ export async function POST(request) {
     
     if (!file || !moduleId) {
       return NextResponse.json(
-        { error: 'Datei oder Modul-ID fehlt' },
+        { error: 'File or moduleId missing' },
         { status: 400 }
       );
     }
@@ -55,7 +56,7 @@ export async function POST(request) {
     let noteData = {};
     
     if (fileType === 'markdown') {
-      // Für Markdown-Dateien lesen wir den Inhalt
+      // For markdown files, we read the content
       const content = await file.text();
       noteData = {
         type: 'markdown',
@@ -64,7 +65,7 @@ export async function POST(request) {
         createdAt: new Date()
       };
     } else {
-      // Für Freeform-Dateien speichern wir die Datei und den Pfad
+      // For other files, we save the file and store the path
       const fileUrl = await saveFile(file, fileName);
       noteData = {
         type: 'freeform',
@@ -80,7 +81,7 @@ export async function POST(request) {
   } catch (error) {
     console.error('Upload error:', error);
     return NextResponse.json(
-      { error: 'Fehler beim Verarbeiten des Uploads' },
+      { error: 'Error processing upload' },
       { status: 500 }
     );
   }

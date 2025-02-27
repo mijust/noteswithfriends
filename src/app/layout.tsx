@@ -1,6 +1,7 @@
 import { Inter } from 'next/font/google';
-import '../styles/globals.css'; // Updated import path
-import { SessionProvider } from 'next-auth/react'; // Geändert zu SessionProvider
+import '../styles/globals.css';
+import SessionProvider from '@/components/Auth/SessionProvider';
+import NavBar from '@/components/layout/NavBar';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -13,8 +14,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="de">
       <body className={inter.className}>
-        {/* In Next.js 13/14 mit App Router müssen wir einen Client-Wrapper für SessionProvider erstellen */}
-        {children}
+        <SessionProvider>
+          <NavBar />
+          <main>
+            {children}
+          </main>
+        </SessionProvider>
       </body>
     </html>
   );
